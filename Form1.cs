@@ -12,11 +12,36 @@ using System.Windows.Forms;
 using NAudio.Wave;
 using NAudio.CoreAudioApi;
 using System.Windows.Media;
+using Microsoft.Kinect;
+using Coding4Fun.Kinect.WinForm;
+using System.Windows;
+using System.Diagnostics;
 
 namespace Sampler
 {
     public partial class Form1 : Form
     {
+        private System.Drawing.Rectangle [] rec = {new System.Drawing.Rectangle(0,0,50,50),
+                                               new System.Drawing.Rectangle(0,50,50,50),
+                                                new System.Drawing.Rectangle(0,100,50,50),
+                                                new System.Drawing.Rectangle(0,150,50,50), 
+                                                new System.Drawing.Rectangle(50,0,50,50),
+                                               new System.Drawing.Rectangle(50,50,50,50),
+                                                new System.Drawing.Rectangle(50,100,50,50),
+                                                new System.Drawing.Rectangle(50,150,50,50), 
+                                                new System.Drawing.Rectangle(100,0,50,50),
+                                               new System.Drawing.Rectangle(100,50,50,50),
+                                                new System.Drawing.Rectangle(100,100,50,50),
+                                                new System.Drawing.Rectangle(100,150,50,50),  };
+        private KinectSensor sensor = KinectSensor.KinectSensors[0];
+        private System.Drawing.Point rPoint = new System.Drawing.Point();
+        private System.Drawing.Point lPoint = new System.Drawing.Point();
+        private const float ClickHoldingRectThreshold = 0.05f;
+        private Rect _clickHoldingLastRect;
+        private readonly Stopwatch _clickHoldingTimer;
+
+        private const float SkeletonMaxX = 0.60f;
+        private const float SkeletonMaxY = 0.40f;
         Uri prjUri = new Uri("C:/Users/Nick/Documents/Visual Studio 2013/Projects/Sampler/Sampler/Resources/");
         private static Stream[] strs = 
             {Properties.Resources.synth_03, 
@@ -35,7 +60,7 @@ namespace Sampler
         private static Stream lab = Properties.Resources.mafralab;
         SoundPlayer[] snds = new SoundPlayer[strs.Length];
         SoundPlayer sndLab = new SoundPlayer(lab);
-       MediaPlayer Player = new MediaPlayer();
+        MediaPlayer Player = new MediaPlayer();
         public Form1()
         {
             InitializeComponent();
@@ -82,7 +107,7 @@ namespace Sampler
         //    return inputStream;
         //}
 
-        private void button1_MouseHover(object sender, EventArgs e)
+        public void button1_MouseHover(object sender, EventArgs e)
         {
             snds[0].PlayLooping();
             
@@ -151,7 +176,7 @@ namespace Sampler
             Player1.Open(uri);
             Player1.Volume = 0.99;
             Player1.Play();
-            Player1.MediaEnded += MediaPlayer_Loop;
+           // Player1.MediaEnded += MediaPlayer_Loop;
 
             
             
@@ -185,5 +210,178 @@ namespace Sampler
 
 
         public Uri SevenNationArmy { get; set; }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            var parameters = new TransformSmoothParameters();
+            parameters.Smoothing = 0.7f;
+            parameters.Correction = 0.3f;
+            parameters.Prediction = 0.4f;
+            parameters.JitterRadius = 1.0f;
+            parameters.MaxDeviationRadius = 0.5f;
+            sensor.SkeletonStream.Enable(parameters);
+
+            sensor.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
+            sensor.DepthStream.Enable(DepthImageFormat.Resolution640x480Fps30);
+
+            sensor.AllFramesReady += SensorAllFramesReady;
+            try
+            {
+                sensor.Start();
+            }
+            catch (System.IO.IOException)
+            {
+                //another app is using Kinect
+                
+            }
+        }
+
+        void SensorAllFramesReady(object sender, AllFramesReadyEventArgs e)
+        {
+            SensorDepthFrameReady(e);
+            SensorSkeletonFrameReady(e);
+        }
+        void SensorDepthFrameReady(AllFramesReadyEventArgs e)
+        {
+            // if the window is displayed, show the depth buffer image
+                //using (DepthImageFrame depthFrame = e.OpenDepthImageFrame())
+                //{
+                //    if (depthFrame == null)
+                //    {
+                //        return;
+                //    }
+
+                //    video.Source = depthFrame.ToBitmapSource();
+                //}
+            
+        }
+
+
+        void SensorSkeletonFrameReady(AllFramesReadyEventArgs e)
+        {
+            using (SkeletonFrame skeletonFrameData = e.OpenSkeletonFrame())
+            {
+                if (skeletonFrameData == null)
+                {
+                    return;
+                }
+
+                var allSkeletons = new Skeleton[skeletonFrameData.SkeletonArrayLength];
+
+                skeletonFrameData.CopySkeletonDataTo(allSkeletons);
+
+                foreach (Skeleton sd in allSkeletons)
+                {
+                    // the first found/tracked skeleton moves the mouse cursor
+                    if (sd.TrackingState == SkeletonTrackingState.Tracked)
+                    {
+                        // make sure both hands are tracked
+                        if (sd.Joints[JointType.HandRight].TrackingState == JointTrackingState.Tracked)
+                        {
+                            var wristRight = sd.Joints[JointType.WristRight];
+                            var wristLeft = sd.Joints[JointType.WristLeft];
+                            var scaledRightHand = wristRight.ScaleTo((int)Screen.PrimaryScreen.Bounds.Width, (int)Screen.PrimaryScreen.Bounds.Height, SkeletonMaxX, SkeletonMaxY);
+                            var scaledLeftHand = wristLeft.ScaleTo((int)Screen.PrimaryScreen.Bounds.Width, (int)Screen.PrimaryScreen.Bounds.Height, SkeletonMaxX, SkeletonMaxY);
+                            
+                            System.Drawing.Rectangle r = new System.Drawing.Rectangle();
+                            System.Drawing.Point righthand = new System.Drawing.Point((int)scaledRightHand.Position.X, (int)scaledRightHand.Position.Y);
+                            System.Drawing.Point lefthand = new System.Drawing.Point((int)scaledLeftHand.Position.X, (int)scaledLeftHand.Position.Y);
+                            rPoint = righthand;
+                            lPoint = lefthand;
+                           this.panel1.Invalidate();
+                            foreach (System.Drawing.Rectangle r in rec)
+                            {
+                               
+                                   
+                                   
+                                  
+                                    if (r.Contains(righthand) || r.Contains(lefthand))
+                                    {
+                                        switch(b.Name){
+                                            case "button1":
+                                                button1_MouseHover(b, null);
+                                                break;
+                                            case "button2":
+                                                button2_MouseHover(b, null);
+                                                break;
+                                            case "button3":
+                                                button3_MouseHover(b, null);
+                                                break;
+                                            case "button4":
+                                                button4_MouseHover(b, null);
+                                                break;
+                                            case "button5":
+                                                button5_MouseHover(b, null);
+                                                break;
+                                            case "button6":
+                                                button6_MouseHover(b, null);
+                                                break;
+                                            case "button7":
+                                                button7_MouseHover(b, null);
+                                                break;
+                                            case "button8":
+                                                button8_MouseHover(b, null);
+                                                break;
+                                            case "button9":
+                                                button9_MouseHover(b, null);
+                                                break;
+                                            case "button10":
+                                                button10_MouseHover(b, null);
+                                                break;
+                                            case "button11":
+                                                button11_MouseHover(b, null);
+                                                break;
+                                            case "button12":
+                                                button12_MouseHover(b, null);
+                                                break;
+                                                
+                                        }
+                                            
+
+                                    }
+                                    
+                                }
+                            }
+
+                            //var cursorRightX =  + (int)MouseSpeed.Value;
+                           // var cursorRightY = (int)scaledRightHand.Position.Y + (int)MouseSpeed.Value;
+
+                            //var cursorLeftX = (int)scaledLeftHand.Position.X + (int)MouseSpeed.Value;
+                           // var cursorLeftY = (int)scaledLeftHand.Position.Y + (int)MouseSpeed.Value;
+
+                            
+                            //var leftClick = CheckForClickHold(scaledRightHand);
+                            
+                            //NativeMethods.SendMouseInput(cursorX, cursorY, (int)SystemParameters.PrimaryScreenWidth, (int)SystemParameters.PrimaryScreenHeight, leftClick);
+                        }
+                    }
+                }
+            }
+        }
+
+        
+
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+        
+        }
+
+        protected override void OnPaint(PaintEventArgs e) 
+        {
+           
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)//GDI PLUS C#
+        {
+            Graphics g = e.Graphics;
+            g.DrawEllipse(new System.Drawing.Pen(new System.Drawing.SolidBrush(System.Drawing.Color.Red), 3f), new Rectangle(rPoint, new System.Drawing.Size(10,10)));
+            g.DrawEllipse(new System.Drawing.Pen(new System.Drawing.SolidBrush(System.Drawing.Color.Green), 3f), new Rectangle(lPoint, new System.Drawing.Size(10, 10)));
+
+            foreach (System.Drawing.Rectangle r in rec)
+            {
+                g.DrawRectangle(new System.Drawing.Pen(new System.Drawing.SolidBrush(System.Drawing.Color.Black), 3f), r);
+            }
+        }
     }
 }
