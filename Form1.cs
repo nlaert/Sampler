@@ -1,36 +1,35 @@
-﻿using System;
+﻿using Coding4Fun.Kinect.WinForm;
+using Microsoft.Kinect;
+using NAudio.CoreAudioApi;
+using NAudio.Wave;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Media;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using NAudio.Wave;
-using NAudio.CoreAudioApi;
-using System.Windows.Media;
-using Microsoft.Kinect;
-using Coding4Fun.Kinect.WinForm;
 using System.Windows;
-using System.Diagnostics;
+using System.Windows.Forms;
+using System.Windows.Media;
 
 namespace Sampler
 {
     public partial class Form1 : Form
     {
         private static int rectanglesHeight, rectanglesWidth ;
-        private System.Drawing.Rectangle [][] rec = new System.Drawing.Rectangle[nColumns][];
+        private System.Drawing.Rectangle [][] rectangleArray = new System.Drawing.Rectangle[nColumns][];
         private KinectSensor sensor = KinectSensor.KinectSensors[0];
         private System.Drawing.Point rPoint = new System.Drawing.Point();
         private System.Drawing.Point lPoint = new System.Drawing.Point();
         private const float ClickHoldingRectThreshold = 0.05f;
-        private Rect _clickHoldingLastRect;
-        private readonly Stopwatch _clickHoldingTimer;
+        //private Rect _clickHoldingLastRect;
+        //private readonly Stopwatch _clickHoldingTimer;
         private const int nRows = 3, nColumns = 4;
-
         private const float SkeletonMaxX = 0.60f;
         private const float SkeletonMaxY = 0.40f;
         Uri prjUri = new Uri("C:/Users/Nick/Documents/Visual Studio 2013/Projects/Sampler/Sampler/Resources/");
@@ -42,14 +41,17 @@ namespace Sampler
              Properties.Resources.drums,
              Properties.Resources.drumming,
              Properties.Resources.beat126_4,
-             Properties.Resources.spring_beats_4};
+             Properties.Resources.spring_beats_4,
+            Properties.Resources.clock,
+            Properties.Resources.teleport
+            };
         //IWavePlayer waveOutDevice;
         //private static WaveStream mainOutputStream = CreateInputStream(fileName);
         //private static string fileName ="C:/Users/Nick/Documents/Visual Studio 2013/Projects/Sampler/Sampler/Resources/drums";
 
         //Stream b9 = Properties.Resources.festival_in;
         private static Stream lab = Properties.Resources.mafralab;
-        SoundPlayer[] snds = new SoundPlayer[strs.Length];
+        Sound[] snds = new Sound[strs.Length];
         SoundPlayer sndLab = new SoundPlayer(lab);
         MediaPlayer Player = new MediaPlayer();
 
@@ -58,11 +60,12 @@ namespace Sampler
             InitializeComponent();
             rectanglesHeight = panel1.Height/nRows; //4 para caber o logo do mafraLab em baixo
             rectanglesWidth = panel1.Width/nColumns;
-            drawRectangles();
+            createRectangles();
             for (int i = 0; i < snds.Length; i++)
             {
-                snds[i] = new SoundPlayer(strs[i]);
+                snds[i] = new Sound(strs[i]);
             }
+            
 
             //try
             //{
@@ -76,12 +79,12 @@ namespace Sampler
             
         }
 
-        private void drawRectangles()
+        private void createRectangles()
         {
             for (int i=0;i<nColumns;i++){
-                rec[i] = new System.Drawing.Rectangle[nRows];
+                rectangleArray[i] = new System.Drawing.Rectangle[nRows];
                 for (int j=0;j<nRows;j++){
-                    rec[i][j] = new System.Drawing.Rectangle(i*rectanglesHeight,j*rectanglesWidth,rectanglesHeight,rectanglesWidth);
+                    rectangleArray[i][j] = new System.Drawing.Rectangle(i*rectanglesHeight,j*rectanglesWidth,rectanglesHeight,rectanglesWidth);
                 }
             }
                                                    //new System.Drawing.Rectangle(0,0,rectanglesHeight,rectanglesWidth),
@@ -193,10 +196,7 @@ namespace Sampler
             Player1.Open(uri);
             Player1.Volume = 0.99;
             Player1.Play();
-           // Player1.MediaEnded += MediaPlayer_Loop;
-
-            
-            
+           // Player1.MediaEnded += MediaPlayer_Loop; 
         }
 
         private void MediaPlayer_Loop(object sender, EventArgs e)
@@ -216,17 +216,13 @@ namespace Sampler
             //Uri uri = new Uri(u,"SevenNationArmy.wav");
             //Player.Open(u);
             //Player.Volume=0.99;
-            //Player.Play();
-            
+            //Player.Play(); 
         }
 
         private void pictureBox1_MouseHover(object sender, EventArgs e)
         {
             sndLab.Play();
         }
-
-
-        public Uri SevenNationArmy { get; set; }
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -248,8 +244,7 @@ namespace Sampler
             }
             catch (System.IO.IOException)
             {
-                //another app is using Kinect
-                
+                //another app is using Kinect   
             }
         }
 
@@ -270,9 +265,7 @@ namespace Sampler
 
                 //    video.Source = depthFrame.ToBitmapSource();
                 //}
-            
         }
-
 
         void SensorSkeletonFrameReady(AllFramesReadyEventArgs e)
         {
@@ -300,13 +293,23 @@ namespace Sampler
                             var scaledRightHand = wristRight.ScaleTo((int)Screen.PrimaryScreen.Bounds.Width, (int)Screen.PrimaryScreen.Bounds.Height, SkeletonMaxX, SkeletonMaxY);
                             var scaledLeftHand = wristLeft.ScaleTo((int)Screen.PrimaryScreen.Bounds.Width, (int)Screen.PrimaryScreen.Bounds.Height, SkeletonMaxX, SkeletonMaxY);
                             
-                            System.Drawing.Rectangle r = new System.Drawing.Rectangle();
+                            //System.Drawing.Rectangle r = new System.Drawing.Rectangle();
                             System.Drawing.Point righthand = new System.Drawing.Point((int)scaledRightHand.Position.X, (int)scaledRightHand.Position.Y);
                             System.Drawing.Point lefthand = new System.Drawing.Point((int)scaledLeftHand.Position.X, (int)scaledLeftHand.Position.Y);
                             rPoint = righthand;
                             lPoint = lefthand;
                            this.panel1.Invalidate();
-                            //foreach (System.Drawing.Rectangle re in rec)
+                           for (int i = 0; i < nColumns; i++)
+                           {
+                               for (int j = 0; j < nRows; j++)
+                               {
+                                   if (rectangleArray[i][j].Contains(lefthand))
+                                       play(i, j);
+                                   else
+                                       stop(i, j);
+                               }
+                           }
+                            //foreach (System.Drawing.Rectangle re in rectangleArray) rectangleArray[i][j].Contains(righthand) || 
                             //{
                                     //if (re.Contains(righthand) || re.Contains(lefthand))
                                     //{
@@ -370,35 +373,40 @@ namespace Sampler
                     }
                 }
             }
-        
 
-        
+        private void stop(int i, int j)
+        {
+            int aux = i * nColumns + j;
+            if (aux < snds.Length) //TODO remover if depois de ter todos os sons
+                snds[aux].Stop();
+        }
 
+        private void play(int i, int j)
+        {
+            int aux = i * nColumns + j;
+            if(aux<snds.Length) //TODO remover if depois de ter todos os sons
+                snds[aux].PlayLooping(); 
+        }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
         
         }
 
-        protected override void OnPaint(PaintEventArgs e) 
-        {
-           
-        }
-
         private void panel1_Paint(object sender, PaintEventArgs e)//GDI PLUS C#
         {
             Graphics g = e.Graphics;
             g.DrawEllipse(new System.Drawing.Pen(new System.Drawing.SolidBrush(System.Drawing.Color.Red), 3f), new Rectangle(rPoint, new System.Drawing.Size(10,10)));
-            g.DrawEllipse(new System.Drawing.Pen(new System.Drawing.SolidBrush(System.Drawing.Color.Green), 5f), new Rectangle(lPoint, new System.Drawing.Size(10, 10)));
+            g.DrawEllipse(new System.Drawing.Pen(new System.Drawing.SolidBrush(System.Drawing.Color.Green), 3f), new Rectangle(lPoint, new System.Drawing.Size(10, 10)));
 
             for (int i = 0; i < nColumns; i++)
             {
                 for (int j = 0; j < nRows; j++)
                 {
-                    g.DrawRectangle(new System.Drawing.Pen(new System.Drawing.SolidBrush(System.Drawing.Color.Black), 1f), rec[i][j]);
+                    g.DrawRectangle(new System.Drawing.Pen(new System.Drawing.SolidBrush(System.Drawing.Color.Black), 1f), rectangleArray[i][j]);
                 }
             }
-            //foreach (System.Drawing.Rectangle[] r in rec)
+            //foreach (System.Drawing.Rectangle[] r in rectangleArray)
             //{
             //    g.DrawRectangle(new System.Drawing.Pen(new System.Drawing.SolidBrush(System.Drawing.Color.Black), 3f), r);
             //}

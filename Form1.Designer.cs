@@ -203,8 +203,9 @@
             // 
             // pictureBox1
             // 
+            this.pictureBox1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.pictureBox1.Image = global::Sampler.Properties.Resources.mafraLab_logo;
-            this.pictureBox1.Location = new System.Drawing.Point(104, 543);
+            this.pictureBox1.Location = new System.Drawing.Point(223, 543);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(506, 174);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
