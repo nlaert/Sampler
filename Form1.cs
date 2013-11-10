@@ -21,24 +21,15 @@ namespace Sampler
 {
     public partial class Form1 : Form
     {
-        private System.Drawing.Rectangle [] rec = {new System.Drawing.Rectangle(0,0,50,50),
-                                               new System.Drawing.Rectangle(0,50,50,50),
-                                                new System.Drawing.Rectangle(0,100,50,50),
-                                                new System.Drawing.Rectangle(0,150,50,50), 
-                                                new System.Drawing.Rectangle(50,0,50,50),
-                                               new System.Drawing.Rectangle(50,50,50,50),
-                                                new System.Drawing.Rectangle(50,100,50,50),
-                                                new System.Drawing.Rectangle(50,150,50,50), 
-                                                new System.Drawing.Rectangle(100,0,50,50),
-                                               new System.Drawing.Rectangle(100,50,50,50),
-                                                new System.Drawing.Rectangle(100,100,50,50),
-                                                new System.Drawing.Rectangle(100,150,50,50),  };
+        private static int rectanglesHeight, rectanglesWidth ;
+        private System.Drawing.Rectangle [][] rec = new System.Drawing.Rectangle[nColumns][];
         private KinectSensor sensor = KinectSensor.KinectSensors[0];
         private System.Drawing.Point rPoint = new System.Drawing.Point();
         private System.Drawing.Point lPoint = new System.Drawing.Point();
         private const float ClickHoldingRectThreshold = 0.05f;
         private Rect _clickHoldingLastRect;
         private readonly Stopwatch _clickHoldingTimer;
+        private const int nRows = 3, nColumns = 4;
 
         private const float SkeletonMaxX = 0.60f;
         private const float SkeletonMaxY = 0.40f;
@@ -61,9 +52,13 @@ namespace Sampler
         SoundPlayer[] snds = new SoundPlayer[strs.Length];
         SoundPlayer sndLab = new SoundPlayer(lab);
         MediaPlayer Player = new MediaPlayer();
+
         public Form1()
         {
             InitializeComponent();
+            rectanglesHeight = panel1.Height/nRows; //4 para caber o logo do mafraLab em baixo
+            rectanglesWidth = panel1.Width/nColumns;
+            drawRectangles();
             for (int i = 0; i < snds.Length; i++)
             {
                 snds[i] = new SoundPlayer(strs[i]);
@@ -79,6 +74,28 @@ namespace Sampler
             //    return;
             //}
             
+        }
+
+        private void drawRectangles()
+        {
+            for (int i=0;i<nColumns;i++){
+                rec[i] = new System.Drawing.Rectangle[nRows];
+                for (int j=0;j<nRows;j++){
+                    rec[i][j] = new System.Drawing.Rectangle(i*rectanglesHeight,j*rectanglesWidth,rectanglesHeight,rectanglesWidth);
+                }
+            }
+                                                   //new System.Drawing.Rectangle(0,0,rectanglesHeight,rectanglesWidth),
+                                                   //new System.Drawing.Rectangle(0,50,50,50),
+                                                   //new System.Drawing.Rectangle(0,100,50,50),
+                                                   //new System.Drawing.Rectangle(0,150,50,50), 
+                                                   //new System.Drawing.Rectangle(50,0,50,50),
+                                                   //new System.Drawing.Rectangle(50,50,50,50),
+                                                   //new System.Drawing.Rectangle(50,100,50,50),
+                                                   //new System.Drawing.Rectangle(50,150,50,50), 
+                                                   //new System.Drawing.Rectangle(100,0,50,50),
+                                                   //new System.Drawing.Rectangle(100,50,50,50),
+                                                   //new System.Drawing.Rectangle(100,100,50,50),
+                                                   //new System.Drawing.Rectangle(100,150,50,50)};
         }
 
         //private static WaveStream CreateInputStream(string fileName)
@@ -289,58 +306,54 @@ namespace Sampler
                             rPoint = righthand;
                             lPoint = lefthand;
                            this.panel1.Invalidate();
-                            foreach (System.Drawing.Rectangle r in rec)
-                            {
-                               
-                                   
-                                   
-                                  
-                                    if (r.Contains(righthand) || r.Contains(lefthand))
-                                    {
-                                        switch(b.Name){
-                                            case "button1":
-                                                button1_MouseHover(b, null);
-                                                break;
-                                            case "button2":
-                                                button2_MouseHover(b, null);
-                                                break;
-                                            case "button3":
-                                                button3_MouseHover(b, null);
-                                                break;
-                                            case "button4":
-                                                button4_MouseHover(b, null);
-                                                break;
-                                            case "button5":
-                                                button5_MouseHover(b, null);
-                                                break;
-                                            case "button6":
-                                                button6_MouseHover(b, null);
-                                                break;
-                                            case "button7":
-                                                button7_MouseHover(b, null);
-                                                break;
-                                            case "button8":
-                                                button8_MouseHover(b, null);
-                                                break;
-                                            case "button9":
-                                                button9_MouseHover(b, null);
-                                                break;
-                                            case "button10":
-                                                button10_MouseHover(b, null);
-                                                break;
-                                            case "button11":
-                                                button11_MouseHover(b, null);
-                                                break;
-                                            case "button12":
-                                                button12_MouseHover(b, null);
-                                                break;
+                            //foreach (System.Drawing.Rectangle re in rec)
+                            //{
+                                    //if (re.Contains(righthand) || re.Contains(lefthand))
+                                    //{
+                                    //    areaManager(re);
+                                        //switch(b.Name){
+                                        //    case "button1":
+                                        //        button1_MouseHover(b, null);
+                                        //        break;
+                                        //    case "button2":
+                                        //        button2_MouseHover(b, null);
+                                        //        break;
+                                        //    case "button3":
+                                        //        button3_MouseHover(b, null);
+                                        //        break;
+                                        //    case "button4":
+                                        //        button4_MouseHover(b, null);
+                                        //        break;
+                                        //    case "button5":
+                                        //        button5_MouseHover(b, null);
+                                        //        break;
+                                        //    case "button6":
+                                        //        button6_MouseHover(b, null);
+                                        //        break;
+                                        //    case "button7":
+                                        //        button7_MouseHover(b, null);
+                                        //        break;
+                                        //    case "button8":
+                                        //        button8_MouseHover(b, null);
+                                        //        break;
+                                        //    case "button9":
+                                        //        button9_MouseHover(b, null);
+                                        //        break;
+                                        //    case "button10":
+                                        //        button10_MouseHover(b, null);
+                                        //        break;
+                                        //    case "button11":
+                                        //        button11_MouseHover(b, null);
+                                        //        break;
+                                        //    case "button12":
+                                        //        button12_MouseHover(b, null);
+                                        //        break;
                                                 
-                                        }
-                                            
-
-                                    }
+                                        //}
+                 
+                                  //  }
                                     
-                                }
+                               // }
                             }
 
                             //var cursorRightX =  + (int)MouseSpeed.Value;
@@ -357,7 +370,7 @@ namespace Sampler
                     }
                 }
             }
-        }
+        
 
         
 
@@ -376,12 +389,19 @@ namespace Sampler
         {
             Graphics g = e.Graphics;
             g.DrawEllipse(new System.Drawing.Pen(new System.Drawing.SolidBrush(System.Drawing.Color.Red), 3f), new Rectangle(rPoint, new System.Drawing.Size(10,10)));
-            g.DrawEllipse(new System.Drawing.Pen(new System.Drawing.SolidBrush(System.Drawing.Color.Green), 3f), new Rectangle(lPoint, new System.Drawing.Size(10, 10)));
+            g.DrawEllipse(new System.Drawing.Pen(new System.Drawing.SolidBrush(System.Drawing.Color.Green), 5f), new Rectangle(lPoint, new System.Drawing.Size(10, 10)));
 
-            foreach (System.Drawing.Rectangle r in rec)
+            for (int i = 0; i < nColumns; i++)
             {
-                g.DrawRectangle(new System.Drawing.Pen(new System.Drawing.SolidBrush(System.Drawing.Color.Black), 3f), r);
+                for (int j = 0; j < nRows; j++)
+                {
+                    g.DrawRectangle(new System.Drawing.Pen(new System.Drawing.SolidBrush(System.Drawing.Color.Black), 1f), rec[i][j]);
+                }
             }
+            //foreach (System.Drawing.Rectangle[] r in rec)
+            //{
+            //    g.DrawRectangle(new System.Drawing.Pen(new System.Drawing.SolidBrush(System.Drawing.Color.Black), 3f), r);
+            //}
         }
     }
 }

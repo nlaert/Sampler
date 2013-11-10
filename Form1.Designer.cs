@@ -228,6 +228,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 729);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.button12);
             this.Controls.Add(this.button9);
             this.Controls.Add(this.button5);
@@ -240,7 +241,6 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.button8);
-            this.Controls.Add(this.panel1);
             this.Name = "Form1";
             this.Text = "Sampler";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
