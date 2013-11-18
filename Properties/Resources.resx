@@ -157,4 +157,10 @@
   <data name="spring_beats_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\spring-beats-4.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="emx_12" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\emx-12.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="silencio" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\silencio.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

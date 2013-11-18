@@ -99,6 +99,15 @@ namespace Sampler.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
         /// </summary>
+        internal static System.IO.UnmanagedMemoryStream emx_12 {
+            get {
+                return ResourceManager.GetStream("emx_12", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
+        /// </summary>
         internal static System.IO.UnmanagedMemoryStream festival_in {
             get {
                 return ResourceManager.GetStream("festival_in", resourceCulture);
@@ -148,6 +157,15 @@ namespace Sampler.Properties {
         internal static System.IO.UnmanagedMemoryStream SevenNationArmy {
             get {
                 return ResourceManager.GetStream("SevenNationArmy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
+        /// </summary>
+        internal static System.IO.UnmanagedMemoryStream silencio {
+            get {
+                return ResourceManager.GetStream("silencio", resourceCulture);
             }
         }
         
