@@ -36,6 +36,7 @@ namespace Sampler
         private const int nRows = 3, nColumns = 4;
         private const float SkeletonMaxX = 0.60f;
         private const float SkeletonMaxY = 0.40f;
+<<<<<<< HEAD
         private WaveOut waveOutR, waveOutL;
         int timerSkeleton = 0; 
         private WaveFileReader[] sounds = {
@@ -58,6 +59,28 @@ namespace Sampler
         bool[] playing;
        
         private static Stream lab = Properties.Resources.mafralab;
+=======
+        Uri prjUri = new Uri("C:/Users/Nick/Documents/Visual Studio 2013/Projects/Sampler/Sampler/Resources/");
+        private static Stream[] strs = 
+            {Properties.Resources.synth_03, 
+             Properties.Resources.massive_synth,
+             Properties.Resources.mov_baix_electro,
+             Properties.Resources.SevenNationArmy,
+             Properties.Resources.drums,
+             Properties.Resources.drumming,
+             Properties.Resources.beat126_4,
+             Properties.Resources.spring_beats_4,
+            Properties.Resources.clock,
+            Properties.Resources.teleport
+            };
+        //IWavePlayer waveOutDevice;
+        //private static WaveStream mainOutputStream = CreateInputStream(fileName);
+        //private static string fileName ="C:/Users/Nick/Documents/Visual Studio 2013/Projects/Sampler/Sampler/Resources/drums";
+
+        //Stream b9 = Properties.Resources.festival_in;
+        private static Stream lab = Properties.Resources.mafralab;
+        Sound[] snds = new Sound[strs.Length];
+>>>>>>> d532eacd9c8bcd69977bff92c08d2397c59746a9
         SoundPlayer sndLab = new SoundPlayer(lab);
        
 
@@ -67,12 +90,32 @@ namespace Sampler
             rectanglesHeight = panel1.Height/(nRows-1); //4 para caber o logo do mafraLab em baixo
             rectanglesWidth = panel1.Width/nColumns;
             createRectangles();
+<<<<<<< HEAD
             playing = new bool[sounds.Length];
            
+=======
+            for (int i = 0; i < snds.Length; i++)
+            {
+                snds[i] = new Sound(strs[i]);
+            }
+            
+
+            //try
+            //{
+            //    waveOutDevice = new AsioOut();
+            //}
+            //catch (Exception driverCreateException)
+            //{
+            //    MessageBox.Show(String.Format("{0}", driverCreateException.Message));
+            //    return;
+            //}
+            
+>>>>>>> d532eacd9c8bcd69977bff92c08d2397c59746a9
         }
 
         private void createRectangles()
         {
+<<<<<<< HEAD
             
             for (int i = 0; i < nColumns; i++)
             {
@@ -84,6 +127,150 @@ namespace Sampler
             }
         }
         
+=======
+            for (int i=0;i<nColumns;i++){
+                rectangleArray[i] = new System.Drawing.Rectangle[nRows];
+                for (int j=0;j<nRows;j++){
+                    rectangleArray[i][j] = new System.Drawing.Rectangle(i*rectanglesHeight,j*rectanglesWidth,rectanglesHeight,rectanglesWidth);
+                }
+            }
+                                                   //new System.Drawing.Rectangle(0,0,rectanglesHeight,rectanglesWidth),
+                                                   //new System.Drawing.Rectangle(0,50,50,50),
+                                                   //new System.Drawing.Rectangle(0,100,50,50),
+                                                   //new System.Drawing.Rectangle(0,150,50,50), 
+                                                   //new System.Drawing.Rectangle(50,0,50,50),
+                                                   //new System.Drawing.Rectangle(50,50,50,50),
+                                                   //new System.Drawing.Rectangle(50,100,50,50),
+                                                   //new System.Drawing.Rectangle(50,150,50,50), 
+                                                   //new System.Drawing.Rectangle(100,0,50,50),
+                                                   //new System.Drawing.Rectangle(100,50,50,50),
+                                                   //new System.Drawing.Rectangle(100,100,50,50),
+                                                   //new System.Drawing.Rectangle(100,150,50,50)};
+        }
+
+        //private static WaveStream CreateInputStream(string fileName)
+        //{
+        //    WaveChannel32 inputStream;
+        //    if (fileName.EndsWith(".wav"))
+        //    {
+        //        WaveStream readerStream = new WaveFileReader(fileName);
+        //        if (readerStream.WaveFormat.Encoding != WaveFormatEncoding.Pcm)
+        //        {
+        //            readerStream = WaveFormatConversionStream.CreatePcmStream(readerStream);
+        //            readerStream = new BlockAlignReductionStream(readerStream);
+        //        }
+        //        if (readerStream.WaveFormat.BitsPerSample != 16)
+        //        {
+        //            var format = new WaveFormat(readerStream.WaveFormat.SampleRate,
+        //               16, readerStream.WaveFormat.Channels);
+        //            readerStream = new WaveFormatConversionStream(format, readerStream);
+        //        }
+        //        inputStream = new WaveChannel32(readerStream);
+        //    }
+        //    else
+        //    {
+        //        throw new InvalidOperationException("Unsupported extension");
+        //    }
+        //    return inputStream;
+        //}
+
+        public void button1_MouseHover(object sender, EventArgs e)
+        {
+            snds[0].PlayLooping();
+            
+        }
+
+        private void button2_MouseHover(object sender, EventArgs e)
+        {
+            snds[1].PlayLooping();
+        }
+
+        private void button3_MouseHover(object sender, EventArgs e)
+        {
+            snds[2].PlayLooping();
+        }
+
+        private void button4_MouseHover(object sender, EventArgs e)
+        {
+            snds[3].PlayLooping();
+        }
+
+        private void button5_MouseHover(object sender, EventArgs e)
+        {
+            snds[4].PlayLooping();
+        }
+
+        private void button6_MouseHover(object sender, EventArgs e)
+        {
+            snds[5].PlayLooping();
+        }
+
+        private void button7_MouseHover(object sender, EventArgs e)
+        {
+            snds[6].PlayLooping();
+        }
+
+        private void button8_MouseHover(object sender, EventArgs e)
+        {
+            snds[7].PlayLooping();
+        }
+
+        private void button9_MouseHover(object sender, EventArgs e)
+        {
+           // snds[8].PlayLooping();
+        }
+
+        private void button10_MouseHover(object sender, EventArgs e)
+        {
+           // snds[9].PlayLooping();
+            //try
+            //{
+            //    waveOutDevice.Init(mainOutputStream);
+            //}
+            //catch (Exception initException)
+            //{
+            //    MessageBox.Show(String.Format("{0}", initException.Message), "Error Initializing Output");
+            //    return;
+            //}
+            //waveOutDevice.Play();
+        }
+
+        private void button11_MouseHover(object sender, EventArgs e)
+        {
+            //snds[10].PlayLooping();
+            System.Windows.Media.MediaPlayer Player1 = new System.Windows.Media.MediaPlayer();
+            Uri uri = new Uri(prjUri, "drums.wav");
+            Player1.Open(uri);
+            Player1.Volume = 0.99;
+            Player1.Play();
+           // Player1.MediaEnded += MediaPlayer_Loop; 
+        }
+
+        private void MediaPlayer_Loop(object sender, EventArgs e)
+        {
+            MediaPlayer player = sender as MediaPlayer;
+            if (player == null)
+                return;
+
+            player.Position = new TimeSpan(0);
+            player.Play();
+        }
+       
+        private void button12_MouseHover(object sender, EventArgs e)
+        {
+            //snds[11].PlayLooping();
+            //Uri u = new Uri(@"\\Sampler\Resources\drums.wav");
+            //Uri uri = new Uri(u,"SevenNationArmy.wav");
+            //Player.Open(u);
+            //Player.Volume=0.99;
+            //Player.Play(); 
+        }
+
+        private void pictureBox1_MouseHover(object sender, EventArgs e)
+        {
+            sndLab.Play();
+        }
+>>>>>>> d532eacd9c8bcd69977bff92c08d2397c59746a9
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -156,6 +343,10 @@ namespace Sampler
                             var scaledRightHand = wristRight.ScaleTo((int)Screen.PrimaryScreen.Bounds.Width, (int)Screen.PrimaryScreen.Bounds.Height, SkeletonMaxX, SkeletonMaxY);
                             var scaledLeftHand = wristLeft.ScaleTo((int)Screen.PrimaryScreen.Bounds.Width, (int)Screen.PrimaryScreen.Bounds.Height, SkeletonMaxX, SkeletonMaxY);
                             
+<<<<<<< HEAD
+=======
+                            //System.Drawing.Rectangle r = new System.Drawing.Rectangle();
+>>>>>>> d532eacd9c8bcd69977bff92c08d2397c59746a9
                             System.Drawing.Point righthand = new System.Drawing.Point((int)scaledRightHand.Position.X, (int)scaledRightHand.Position.Y);
                             System.Drawing.Point lefthand = new System.Drawing.Point((int)scaledLeftHand.Position.X, (int)scaledLeftHand.Position.Y);
                             rPoint = righthand;
@@ -165,6 +356,7 @@ namespace Sampler
                            {
                                for (int j = 0; j < nRows; j++)
                                {
+<<<<<<< HEAD
                                   int aux = i * nRows + j;
                                   if (aux < sounds.Length)
                                   {
@@ -232,6 +424,69 @@ namespace Sampler
                                   }
                                }
                            }
+=======
+                                   if (rectangleArray[i][j].Contains(lefthand))
+                                       play(i, j);
+                                   else
+                                       stop(i, j);
+                               }
+                           }
+                            //foreach (System.Drawing.Rectangle re in rectangleArray) rectangleArray[i][j].Contains(righthand) || 
+                            //{
+                                    //if (re.Contains(righthand) || re.Contains(lefthand))
+                                    //{
+                                    //    areaManager(re);
+                                        //switch(b.Name){
+                                        //    case "button1":
+                                        //        button1_MouseHover(b, null);
+                                        //        break;
+                                        //    case "button2":
+                                        //        button2_MouseHover(b, null);
+                                        //        break;
+                                        //    case "button3":
+                                        //        button3_MouseHover(b, null);
+                                        //        break;
+                                        //    case "button4":
+                                        //        button4_MouseHover(b, null);
+                                        //        break;
+                                        //    case "button5":
+                                        //        button5_MouseHover(b, null);
+                                        //        break;
+                                        //    case "button6":
+                                        //        button6_MouseHover(b, null);
+                                        //        break;
+                                        //    case "button7":
+                                        //        button7_MouseHover(b, null);
+                                        //        break;
+                                        //    case "button8":
+                                        //        button8_MouseHover(b, null);
+                                        //        break;
+                                        //    case "button9":
+                                        //        button9_MouseHover(b, null);
+                                        //        break;
+                                        //    case "button10":
+                                        //        button10_MouseHover(b, null);
+                                        //        break;
+                                        //    case "button11":
+                                        //        button11_MouseHover(b, null);
+                                        //        break;
+                                        //    case "button12":
+                                        //        button12_MouseHover(b, null);
+                                        //        break;
+                                                
+                                        //}
+                 
+                                  //  }
+                                    
+                               // }
+                            }
+
+                            //var cursorRightX =  + (int)MouseSpeed.Value;
+                           // var cursorRightY = (int)scaledRightHand.Position.Y + (int)MouseSpeed.Value;
+
+                            //var cursorLeftX = (int)scaledLeftHand.Position.X + (int)MouseSpeed.Value;
+                           // var cursorLeftY = (int)scaledLeftHand.Position.Y + (int)MouseSpeed.Value;
+>>>>>>> d532eacd9c8bcd69977bff92c08d2397c59746a9
 
                         }
                             //NativeMethods.SendMouseInput(cursorX, cursorY, (int)SystemParameters.PrimaryScreenWidth, (int)SystemParameters.PrimaryScreenHeight, leftClick);
@@ -262,6 +517,32 @@ namespace Sampler
                     }
                 }
             }
+<<<<<<< HEAD
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+=======
+
+        private void stop(int i, int j)
+        {
+            int aux = i * nColumns + j;
+            if (aux < snds.Length) //TODO remover if depois de ter todos os sons
+                snds[aux].Stop();
+        }
+
+        private void play(int i, int j)
+>>>>>>> d532eacd9c8bcd69977bff92c08d2397c59746a9
+        {
+            int aux = i * nColumns + j;
+            if(aux<snds.Length) //TODO remover if depois de ter todos os sons
+                snds[aux].PlayLooping(); 
+        }
+
+<<<<<<< HEAD
+        private void panel1_Paint(object sender, PaintEventArgs e)//GDI PLUS C#
+        {
+            Graphics g = e.Graphics;
+            g.DrawEllipse(new System.Drawing.Pen(new System.Drawing.SolidBrush(System.Drawing.Color.Red), 6f), new Rectangle(rPoint, new System.Drawing.Size(10,10)));
+            g.DrawEllipse(new System.Drawing.Pen(new System.Drawing.SolidBrush(System.Drawing.Color.Green), 6f), new Rectangle(lPoint, new System.Drawing.Size(10, 10)));
+=======
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
         
@@ -270,8 +551,9 @@ namespace Sampler
         private void panel1_Paint(object sender, PaintEventArgs e)//GDI PLUS C#
         {
             Graphics g = e.Graphics;
-            g.DrawEllipse(new System.Drawing.Pen(new System.Drawing.SolidBrush(System.Drawing.Color.Red), 6f), new Rectangle(rPoint, new System.Drawing.Size(10,10)));
-            g.DrawEllipse(new System.Drawing.Pen(new System.Drawing.SolidBrush(System.Drawing.Color.Green), 6f), new Rectangle(lPoint, new System.Drawing.Size(10, 10)));
+            g.DrawEllipse(new System.Drawing.Pen(new System.Drawing.SolidBrush(System.Drawing.Color.Red), 3f), new Rectangle(rPoint, new System.Drawing.Size(10,10)));
+            g.DrawEllipse(new System.Drawing.Pen(new System.Drawing.SolidBrush(System.Drawing.Color.Green), 3f), new Rectangle(lPoint, new System.Drawing.Size(10, 10)));
+>>>>>>> d532eacd9c8bcd69977bff92c08d2397c59746a9
 
             for (int i = 0; i < nColumns; i++)
             {
@@ -280,6 +562,13 @@ namespace Sampler
                     g.DrawRectangle(new System.Drawing.Pen(new System.Drawing.SolidBrush(System.Drawing.Color.Black), 1f), rectangleArray[i][j]);
                 }
             }
+<<<<<<< HEAD
+=======
+            //foreach (System.Drawing.Rectangle[] r in rectangleArray)
+            //{
+            //    g.DrawRectangle(new System.Drawing.Pen(new System.Drawing.SolidBrush(System.Drawing.Color.Black), 3f), r);
+            //}
+>>>>>>> d532eacd9c8bcd69977bff92c08d2397c59746a9
         }
     }
 }
